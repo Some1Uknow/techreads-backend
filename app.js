@@ -110,7 +110,9 @@ app.get("/profile", (req, res) => {
 });
 
 app.post("/logout", (req, res) => {
-  res.cookie("token", "").json("Logged Out");
+  // res.cookie("token", "").json("Logged Out");
+  res.clearCookie("token");
+  res.status(200).json({ message: "Logout successful" });
 });
 
 app.post("/post", upload.single("file"), async (req, res) => {
