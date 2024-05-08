@@ -70,17 +70,22 @@ app.post("/login", async (req, res) => {
   }
   bcrypt.compare(password, userData.password, function (err, result) {
     if (result == true) {
-      console.log("Login DONE");
-      jwt.sign(
+      console.log("JWT Begin");
+    jwt.sign(
         { username, id: userData._id },
         process.env.JWT,
         {},
         (err, token) => {
           if (err) throw err;
+          console.log(token, process.env.JWT);
           res
-            .cookie("token", token)
+            .cookie("token", token, {
+              httpOnly: true,
+              secure: true,
+              sameSite: "none",
+            })
             .status(200)
-            .json({ id: userData._id, username });
+            .json({ id: userData._id, username, message: "Authenticated"});
         }
       );
     } else {
@@ -238,5 +243,5 @@ app.put("/profile/:id", async (req, res) => {
     email,
   });
   if (!userProfile) res.status(400).json({ message: "User doesnt exists" });
-  res.status(200).json({message: "Profile Updated"});
+  res.status(200).json({ message: "Profile Updated" });
 });
