@@ -36,14 +36,15 @@ app.get("/", (req, res) => {
 
 var corsOptions = {
   origin: process.env.FRONTEND_URL,
-  optionsSuccessStatus: 200,
   credentials: true,
+  allowedHeaders: ["Content-Type", "Authorization"],
 };
 
-connectDB();
-
 app.use(cors(corsOptions));
+
 app.use(express.json());
+
+connectDB();
 
 app.post("/register", async (req, res) => {
   try {
