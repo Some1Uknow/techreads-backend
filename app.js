@@ -47,8 +47,13 @@ app.use(express.json());
 connectDB();
 
 app.post("/register", async (req, res) => {
+  const { username, email, password } = req.body;
   try {
-    const { username, email, password } = req.body;
+    const existingUser = await User.findOne({ $or: [{ username }, { email }] });
+    if (existingUser) {
+     return res.status(400).json({ error: "Username or email already exists" });
+    }
+
     const hashedPassword = bcrypt.hashSync(password, saltRounds);
     const userData = await User.create({
       username,
@@ -70,14 +75,13 @@ app.post("/login", async (req, res) => {
   }
   bcrypt.compare(password, userData.password, function (err, result) {
     if (result == true) {
-      console.log("JWT Begin");
       jwt.sign(
         { username, id: userData._id },
         process.env.JWT,
         {},
         (err, token) => {
           if (err) throw err;
-          console.log(token, process.env.JWT);
+
           res
             .cookie("token", token, {
               httpOnly: true,
@@ -126,7 +130,6 @@ app.post("/post", upload.single("file"), async (req, res) => {
   const filePath = req.file.path;
   const { title, summary, content } = req.body;
   jwt.verify(token, process.env.JWT, {}, async (err, info) => {
-    console.log(info);
     if (err) {
       console.error(err);
       return res.status(401).json({ message: "Invalid token" });
@@ -141,7 +144,6 @@ app.post("/post", upload.single("file"), async (req, res) => {
         author: info.id,
       });
       res.status(200).json({ message: "File uploaded successfully", blogData });
-      console.log("uploaded blog");
     } catch (error) {
       console.log("cannot upload blogdata", error);
       res.status(400).json({ message: "Cannot upload blogdata" });
@@ -228,7 +230,6 @@ app.put("/edit/:id", upload.single("file"), async (req, res) => {
       imagePath: file,
     });
     res.status(200).json(updatedPost);
-    console.log("updated");
   } catch (error) {
     console.error("Error updating blog post:", error);
     res.status(500).send("Internal Server Error");
