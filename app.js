@@ -112,7 +112,7 @@ app.get("/profile", (req, res) => {
 app.post("/logout", (req, res) => {
   // res.cookie("token", "").json("Logged Out");
   res
-    .cookie("token", null, {
+    .cookie("token", "", {
       httpOnly: true,
       secure: true,
       sameSite: "none",
