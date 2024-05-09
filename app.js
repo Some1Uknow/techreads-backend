@@ -71,7 +71,7 @@ app.post("/login", async (req, res) => {
   bcrypt.compare(password, userData.password, function (err, result) {
     if (result == true) {
       console.log("JWT Begin");
-    jwt.sign(
+      jwt.sign(
         { username, id: userData._id },
         process.env.JWT,
         {},
@@ -85,7 +85,7 @@ app.post("/login", async (req, res) => {
               sameSite: "none",
             })
             .status(200)
-            .json({ id: userData._id, username, message: "Authenticated"});
+            .json({ id: userData._id, username, message: "Authenticated" });
         }
       );
     } else {
@@ -111,8 +111,8 @@ app.get("/profile", (req, res) => {
 
 app.post("/logout", (req, res) => {
   // res.cookie("token", "").json("Logged Out");
-  res.clearCookie("token");
-  res.status(200).json({ message: "Logout successful" });
+
+  res.cookie("token", null).json({ message: "Logout successful" }).status(201);
 });
 
 app.post("/post", upload.single("file"), async (req, res) => {
