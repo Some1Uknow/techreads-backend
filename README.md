@@ -27,6 +27,7 @@ TechReads is targeted towards tech enthusiasts, developers, and anyone intereste
 - Mongoose
 - JWT for authentication
 - Multer for file uploads
+<img src="https://skillicons.dev/icons?i=nodejs,expressjs,mongodb,js"/>
 
 ## How to Use
 
