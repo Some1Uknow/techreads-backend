@@ -127,7 +127,7 @@ app.post("/logout", (req, res) => {
 
 app.post("/post", upload.single("file"), async (req, res) => {
   const { token } = req.cookies;
-  const filePath = req.file.path;
+  const filePath = req.file?.path;
   const { title, summary, content } = req.body;
   jwt.verify(token, process.env.JWT, {}, async (err, info) => {
     if (err) {
