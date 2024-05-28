@@ -243,13 +243,16 @@ app.get("/profile/:id", async (req, res) => {
   res.status(200).json(userProfile);
 });
 
-app.put("/profile/:id", async (req, res) => {
+app.put("/profile/:id", upload.single('profilePhoto'), async (req, res) => {
   const { bio, username, email } = req.body;
   const userId = req.params.id;
+  const profilePicture = req.file.path;
+  console.log(profilePicture);
   const userProfile = await User.findByIdAndUpdate(userId, {
     bio,
     username,
     email,
+    userImage: profilePicture,
   });
   if (!userProfile) res.status(400).json({ message: "User doesnt exists" });
   res.status(200).json({ message: "Profile Updated" });
